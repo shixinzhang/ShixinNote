@@ -1,0 +1,4 @@
+Serializable
+Externalizable
+
+transient

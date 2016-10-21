@@ -1,0 +1,1 @@
+http://www.kutear.com/post/java/2016-09-04-think_in_java_15
