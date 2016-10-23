@@ -498,7 +498,26 @@
         return elementData.length;
     }
 
-###7. Vector 中的迭代器
+###7. Vector 也可以转成数组
+
+    public synchronized Object[] toArray() {
+        return Arrays.copyOf(elementData, elementCount);
+    }
+
+	//跟 ArrayList 简直一样
+    public synchronized <T> T[] toArray(T[] a) {
+        if (a.length < elementCount)
+            return (T[]) Arrays.copyOf(elementData, elementCount, a.getClass());
+
+        System.arraycopy(elementData, 0, a, 0, elementCount);
+
+        if (a.length > elementCount)
+            a[elementCount] = null;
+
+        return a;
+    }
+
+###8. Vector 中的迭代器
 
 普通迭代器　Iterator:
 
@@ -517,6 +536,7 @@
         }
 
         public E next() {
+			//注意了，Vector 连迭代器的方法也加了同步
             synchronized (Vector.this) {
                 checkForComodification();
                 int i = cursor;
@@ -530,6 +550,7 @@
         public void remove() {
             if (lastRet == -1)
                 throw new IllegalStateException();
+			//注意了，Vector 连迭代器的方法也加了同步
             synchronized (Vector.this) {
                 checkForComodification();
                 Vector.this.remove(lastRet);
@@ -539,6 +560,7 @@
             lastRet = -1;
         }
 
+		//大概看下这个 1.8 的方法
         @Override
         public void forEachRemaining(Consumer<? super E> action) {
             Objects.requireNonNull(action);
@@ -568,6 +590,79 @@
                 throw new ConcurrentModificationException();
         }
     }
+
+ListIterator:
+
+    public synchronized ListIterator<E> listIterator(int index) {
+        if (index < 0 || index > elementCount)
+            throw new IndexOutOfBoundsException("Index: "+index);
+        return new ListItr(index);
+    }
+
+    final class ListItr extends Itr implements ListIterator<E> {
+        ListItr(int index) {
+            super();
+            cursor = index;
+        }
+
+        public boolean hasPrevious() {
+            return cursor != 0;
+        }
+
+        public int nextIndex() {
+            return cursor;
+        }
+
+        public int previousIndex() {
+            return cursor - 1;
+        }
+
+        public E previous() {
+            synchronized (Vector.this) {
+                checkForComodification();
+                int i = cursor - 1;
+                if (i < 0)
+                    throw new NoSuchElementException();
+                cursor = i;
+                return elementData(lastRet = i);
+            }
+        }
+
+        public void set(E e) {
+            if (lastRet == -1)
+                throw new IllegalStateException();
+            synchronized (Vector.this) {
+                checkForComodification();
+                Vector.this.set(lastRet, e);
+            }
+        }
+
+        public void add(E e) {
+            int i = cursor;
+            synchronized (Vector.this) {
+                checkForComodification();
+                Vector.this.add(i, e);
+                expectedModCount = modCount;
+            }
+            cursor = i + 1;
+            lastRet = -1;
+        }
+    }
+
+    //1.8 新增的略过。。。
+
+	//还多了个 sort 方法，自己传入的集合需要实现比较器
+    @SuppressWarnings("unchecked")
+    @Override
+    public synchronized void sort(Comparator<? super E> c) {
+        final int expectedModCount = modCount;
+        Arrays.sort((E[]) elementData, 0, elementCount, c);
+        if (modCount != expectedModCount) {
+            throw new ConcurrentModificationException();
+        }
+        modCount++;
+    }
+
 
 
 Vector 还支持 Enumeration　迭代：
@@ -620,7 +715,7 @@ Vector 还支持 Enumeration　迭代：
 - Vector 是线程安全的，ArrayList 不是
 - Vector 默认扩容 2 倍，ArrayList 是 1.5
 
-如果没有线程安全的需求，一般推荐使用 ArrayList，而不是 Vector。
+如果没有线程安全的需求，一般推荐使用 ArrayList，而不是 Vector，因为每次都要获取锁，效率太低。
 
 
 ##Thanks
