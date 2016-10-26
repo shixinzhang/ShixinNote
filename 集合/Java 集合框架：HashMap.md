@@ -16,6 +16,8 @@ http://blog.csdn.net/u011240877/article/details/45025079
 
 ##Thanks
 
+https://github.com/GeniusVJR/LearningNotes/blob/master/Part2/JavaSE/HashMap%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90.md
+
 http://www.nowamagic.net/librarys/veda/detail/1273
 
 http://www.nowamagic.net/librarys/veda/detail/1202
