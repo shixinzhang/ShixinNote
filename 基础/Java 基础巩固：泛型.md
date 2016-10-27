@@ -1,3 +1,6 @@
+根据《Java编程思想 （第4版）》中的描述，泛型出现的动机在于：
+
+>有许多原因促成了泛型的出现，而最引人注意的一个原因，就是为了创建容器类。
 
 http://www.runoob.com/java/java-generics.html
 

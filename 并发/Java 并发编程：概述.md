@@ -5,6 +5,11 @@
 很棒的一个专题
 http://www.cnblogs.com/skywang12345/p/java_threads_category.html
 
+另外一个专题
+http://www.cnblogs.com/dolphin0520/category/602384.html
+
+http://www.jianshu.com/p/4b0721633009
+
 http://blog.csdn.net/picway/article/details/52789728
 http://blog.csdn.net/zhangerqing/article/details/8271105
 http://www.cnblogs.com/paddix/p/5381958.html
@@ -13,3 +18,10 @@ http://blog.csdn.net/mazhimazh/article/category/1907597
 
 ###官方
 https://docs.oracle.com/javase/specs/jls/se8/html/jls-17.html
+
+##多线程面试题
+
+http://www.cnblogs.com/dolphin0520/p/3932934.html
+
+http://www.cnblogs.com/dolphin0520/p/3958019.html
+
