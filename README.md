@@ -93,4 +93,8 @@
 
 GitHub: https://github.com/shixinzhang/ShixinJavaSECore
 
-CSDN：http://blog.csdn.net/u011240877
+CSDN: http://blog.csdn.net/u011240877
+
+##Thanks
+
+如果对你有任何帮助，欢迎 Star, fork
