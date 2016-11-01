@@ -16,6 +16,10 @@ http://www.cnblogs.com/paddix/p/5381958.html
 
 http://blog.csdn.net/mazhimazh/article/category/1907597
 
+##张涛封装的线程池代码，可以看看
+https://github.com/kymjs/KJFrameForAndroid/blob/master/KJFrame/kjframe/src/main/java/org/kymjs/kjframe/http/KJAsyncTask.java
+
+
 ###官方
 https://docs.oracle.com/javase/specs/jls/se8/html/jls-17.html
 
