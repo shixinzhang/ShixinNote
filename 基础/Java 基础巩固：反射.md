@@ -3,3 +3,5 @@
 http://a.codekk.com/detail/Android/Mr.Simple/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E5%8F%8D%E5%B0%84%20Reflection
 
 http://www.liuling123.com/2013/05/java-reflex.html
+
+http://blog.csdn.net/jiangwei0910410003/article/details/18178687
