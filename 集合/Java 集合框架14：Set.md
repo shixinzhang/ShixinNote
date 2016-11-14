@@ -226,6 +226,13 @@ EnumSet 还提供了类型安全的替换操作，比如这样：
     c.stream()
     .collect(Collectors.toSet()); // no duplicates
 
+##Map与Set的关系
+
+Set集合的特点是不能存储重复元素，不能保持元素插入时的顺序，且key值最多允许有一个null值。
+由于Map中的key与Set集合特点相同，所以如果将Map中的value值当作key的附属的话，所有的key值就可以组成一个value集合。
+来看一下两个集合的实现类图：
+http://blog.csdn.net/mazhimazh/article/details/17876641
+
 ##Thanks
 
 http://baike.baidu.com/link?url=Pgz8A5Z1zy1tH-2PX3dHtIQzeTq9JXXKKWidKtsU8eKWdG9Nw_w8KgebbnUXO3JnbqV8JJhmo9eUhJHBIlI1Hq

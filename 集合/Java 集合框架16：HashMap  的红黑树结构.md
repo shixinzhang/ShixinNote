@@ -20,6 +20,10 @@
 
 ##HashMap 在 JDK 1.8 中新增的操作：树形化
 
+##面试题
+
+HashMap里面的hash映射？如何实现根据Key的hashcode找到下标？HashMap做了哪些优化？
+
 
 ##Thanks
 

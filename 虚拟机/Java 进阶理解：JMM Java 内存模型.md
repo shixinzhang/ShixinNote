@@ -26,3 +26,5 @@ Java内存模型具备一些先天的“有序性”，即不需要通过任何�
 http://www.cnblogs.com/dolphin0520/p/3920373.html
 
 https://docs.oracle.com/javase/specs/jls/se8/html/jls-17.html#jls-17.4
+
+http://blog.csdn.net/reliveit/article/details/46940989
