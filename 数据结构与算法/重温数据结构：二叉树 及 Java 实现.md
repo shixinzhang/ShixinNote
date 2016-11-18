@@ -392,9 +392,9 @@
         if (node == null){
             return;
         }
-        iterateFirstOrder(node.getLeftChild());
+        iterateMediumOrder(node.getLeftChild());
         operate(node);
-        iterateFirstOrder(node.getRightChild());
+        iterateMediumOrder(node.getRightChild());
     }
 
 ###后序遍历
@@ -416,8 +416,8 @@
         if (node == null){
             return;
         }
-        iterateFirstOrder(node.getLeftChild());
-        iterateFirstOrder(node.getRightChild());
+        iterateLastOrder(node.getLeftChild());
+        iterateLastOrder(node.getRightChild());
         operate(node);
     }
     

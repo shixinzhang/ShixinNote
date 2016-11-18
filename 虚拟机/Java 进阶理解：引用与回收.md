@@ -5,3 +5,5 @@ http://www.cnblogs.com/skywang12345/p/3154474.html
 
 这才是虚引用！
 http://blog.csdn.net/reliveit/article/details/47664029
+
+http://blog.csdn.net/hexieshangwang/article/details/47251615
