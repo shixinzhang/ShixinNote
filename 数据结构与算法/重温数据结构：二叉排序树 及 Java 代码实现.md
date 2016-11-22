@@ -1,12 +1,17 @@
 >读完本文你将了解到：
 
 >- 什么是二叉排序树（即 B 树、二叉查找树、二叉搜索树）
->- 二叉排序树的关键操作
-- 二叉排序树的优点缺点及使用场景
->- Java 实现一个二叉排序树
->- 二叉排序树的常见面试题
+>- 二叉排序树的关键操作及实现
+>- 二叉排序树的一道面试题
+
+我们知道，二分查找可以缩短查找的时间，但是有个要求就是 **查找的数据必须是有序的**。每次查找、操作时都要维护一个有序的数据集，于是有了二叉排序树这个概念。
+
+[上篇文章](http://blog.csdn.net/u011240877/article/details/53193918) 我们介绍了 二叉树 的概念，二叉树有左右子树之分，想必在区分左右子树时有一定的规则。
+
+现在我们来介绍二叉树的一种特殊形式 --- 二叉排序树，了解它的区分策略及常用操作。
 
 ##什么是二叉排序树 Binary Sort Tree, BST
+
 
 二叉排序树，又称二叉查找树、二叉搜索树、B树。
 
@@ -14,26 +19,318 @@
 
 - 若左子树不空，则左子树上所有结点的值均小于它的根结点的值；
 - 若右子树不空，则右子树上所有结点的值均大于或等于它的根结点的值；
-- 左、右子树也分别为二叉排序树；
+- 左、右子树也分别为二叉排序树。
 
 ![这里写图片描述](http://img.blog.csdn.net/20161031182149529)
+
+也就是说，二叉排序树中，左子树都比节点小，右子树都比节点大，递归定义。
+
+根据二叉排序树这个特点我们可以知道，二叉排序树的中序遍历一定是从小到大的，比如上图，中序遍历结果是：
+
+>1 3 4 6 7 8 10 13 14
 
 ##二叉排序树的关键操作
 
 ###1.查找
 
+根据二叉排序树的定义，我们可以知道在查找某个元素时：
+
+- 先比较它与根节点，相等就返回；或者根节点为空，说明树为空，也返回；
+- 如果它比根节点小，就从根的左子树里进行递归查找；
+- 如果它比根节点大，就从根的右子树里进行递归查找。
+
+可以看到，这就是一个 **二分查找**。
+
+代码实现：
+
+	public class BinarySearchTree {
+	    private BinaryTreeNode mRoot;   //根节点
+	
+	    public BinarySearchTree(BinaryTreeNode root) {
+	        mRoot = root;
+	    }
+	
+	    /**
+	     * 在整个树中查找某个数据
+	     *
+	     * @param data
+	     * @return
+	     */
+	    public BinaryTreeNode search(int data) {
+	        return search(mRoot, data);
+	    }
+	
+	    /**
+	     * 在指定二叉排序树中查找数据
+	     *
+	     * @param node
+	     * @param data
+	     * @return
+	     */
+	    public BinaryTreeNode search(BinaryTreeNode node, int data) {
+	        if (node == null || node.getData() == data) {    //节点为空或者相等，直接返回该节点
+	            return node;
+	        }
+	        if (data < node.getData()) {    //比节点小，就从左子树里递归查找
+	            return search(node.getLeftChild(), data);
+	        } else {        //否则从右子树
+	            return search(node.getRightChild(), data);
+	        }
+	    }
+	}
+	
+可以看到，在二叉排序树中查找是十分简单的，但是这依赖于每次插入、删除元素时对整个 排序树 结构的维护。
+
 ###2.插入
 
-###3.删除
+二叉树中的插入，主要分两步：查找、插入：
 
-插入操作和查找比较类似，也比较的简单，而删除的时候需要根据删除节点的情况分类来对待：
-　　(1). 如果要删除的节点是叶子节点，其没有任何子树，那么就直接删除之；
-　　(2). 如果要删除的节点仅有左子树或者仅有右子树，那么就将其对应的左子树或者右子树这个非空子树整个移动到删除节点的位置，以完成独子承父业；
-　　(3). 如果要删除的节点其左右子树都有节点，具体的做法可以选择：
-　　　　a. 要么沿着要删除节点的左子树，一直向右走，找出最右的节点，取出来替换该删除节点；
-　　　　b. 或者沿着删除节点的右子树，一直向左走，找出最左的节点，然后替换之。
-　　上面最后一种情况的删除原理，其实就是寻找待删除节点大小最相临的前驱或后驱来直接替代它，替代后整个二叉树还是保持有序的状态，同时替换的节点由于是选择的最左或者最右节点，其最多也就只有一个子数，所以替换节点的删除本身也是十分方便的，采用上面(2)的情况处理就可以了。
-　　二叉树的性能取决于二叉树的层数，最好的情况是O(logn)，存在于完全二叉树情况下，其访问性能近似于折半查找；最差时候会是O(n)，比如在斜树的情况下，需要逐个遍历二叉树的元素才行。
+- 先查找有没有整个元素，有的话就不用插入了，直接返回；
+- 没有就插入到之前查到（对比）好的合适的位置。
+
+插入时除了设置数据，还需要跟父节点绑定，让父节点意识到有你这个孩子：比父节点小的就是左孩子，大的就是右孩子。
+
+代码实现：
+
+    /**
+     * 插入到整个树中
+     *
+     * @param data
+     */
+    public void insert(int data) {
+        if (mRoot == null) {     //如果当前是空树，新建一个
+            mRoot = new BinaryTreeNode();
+            mRoot.setData(data);
+            return;
+        }
+
+        searchAndInsert(null, mRoot, data);     //根节点的父亲为 null
+
+    }
+
+    /**
+     * 两步走：查找、插入
+     *
+     * @param parent 要绑定的父节点
+     * @param node   当前比较节点
+     * @param data   数据
+     */
+    private BinaryTreeNode searchAndInsert(BinaryTreeNode parent, BinaryTreeNode node, int data) {
+        if (node == null) {  //当前比较节点为 空，说明之前没有这个数据，直接新建、插入
+            node = new BinaryTreeNode();
+            node.setData(data);
+            if (parent != null) {    //父节点不为空，绑定关系
+                if (data < parent.getData()) {
+                    parent.setLeftChild(node);
+                } else {
+                    parent.setRightChild(node);
+                }
+            }
+            return node;
+        }
+        //对比的节点不为空
+        if (node.getData() == data) {    //已经有了，不用插入了
+            return node;
+        } else if (data < node.getData()) {   //比节点小，从左子树里查找、插入
+            return searchAndInsert(node, node.getLeftChild(), data);
+        } else {
+            return searchAndInsert(node, node.getRightChild(), data);
+        }
+    }
+    
+###3.删除 *
+
+插入操作和查找比较类似，而删除则相对复杂一点，需要根据删除节点的情况分类来对待：
+
+- 如果要删除的节点正好是叶子节点，直接删除就 Ok 了；
+- 如果要删除的节点还有子节点，就需要建立父节点和子节点的关系：
+ - 如果只有左孩子或者右孩子，直接把这个孩子上移放到要删除的位置就好了；
+ - 如果有两个孩子，就需要选一个合适的孩子节点作为新的根节点，该节点称为 **继承节点**。
+
+新节点要求要比所有左子树大，比所有右子树小，怎么选择呢？
+
+**要比所有左子树的值大、右子树小，就从右子树里找最小的好了；
+同样也可以从左子树里找最大的。**
+
+两种选择方法都可以，本文选用右子树里最小的节点，也就是右子树中最左边的节点。
+
+代码实现：
+
+    /**
+     * 在整个树中 查找指定数据节点的父亲节点
+     *
+     * @param data
+     * @return
+     */
+    public BinaryTreeNode searchParent(int data) {
+        return searchParent(null, mRoot, data);
+    }
+
+    /**
+     * 在指定节点下 查找指定数据节点的父亲节点
+     *
+     * @param parent 当前比较节点的父节点
+     * @param node   当前比较的节点
+     * @param data   查找的数据
+     * @return
+     */
+    public BinaryTreeNode searchParent(BinaryTreeNode parent, BinaryTreeNode node, int data) {
+        if (node == null) { //比较的节点为空返回空
+            return null;
+        }
+        if (node.getData() == data) {    //找到了目标节点，返回父节点
+            return parent;
+        } else if (data < node.getData()) {   //数据比当前节点小，左子树中递归查找
+            return searchParent(node, node.getLeftChild(), data);
+        } else {
+            return searchParent(node, node.getRightChild(), data);
+        }
+    }
+
+    /**
+     * 删除指定数据的节点
+     *
+     * @param data
+     */
+    public void delete(int data) {
+        if (mRoot == null || mRoot.getData() == data) {  //根节点为空或者要删除的就是根节点，直接删掉
+            mRoot = null;
+            return;
+        }
+        //在删除之前需要找到它的父亲
+        BinaryTreeNode parent = searchParent(data);
+        if (parent == null) {        //如果父节点为空，说明这个树是空树，没法删
+            return;
+        }
+
+        //接下来该找要删除的节点了
+        BinaryTreeNode deleteNode = search(parent, data);
+        if (deleteNode == null) {    //树中找不到要删除的节点
+            return;
+        }
+        //删除节点有 4 种情况
+        //1.左右子树都为空，说明是叶子节点，直接删除
+        if (deleteNode.getLeftChild() == null && deleteNode.getRightChild() == null) {
+            //删除节点
+            deleteNode = null;
+            //重置父节点的孩子状态，告诉他你以后没有这个儿子了
+            if (parent.getLeftChild() != null && parent.getLeftChild().getData() == data) {
+                parent.setLeftChild(null);
+            } else {
+                parent.setRightChild(null);
+            }
+            return;
+        } else if (deleteNode.getLeftChild() != null && deleteNode.getRightChild() == null) {
+            //2.要删除的节点只有左子树，左子树要继承位置
+            if (parent.getLeftChild() != null && parent.getLeftChild().getData() == data) {
+                parent.setLeftChild(deleteNode.getLeftChild());
+            } else {
+                parent.setRightChild(deleteNode.getLeftChild());
+            }
+            deleteNode = null;
+            return;
+        } else if (deleteNode.getRightChild() != null && deleteNode.getRightChild() == null) {
+            //3.要删除的节点只有右子树，右子树要继承位置
+            if (parent.getLeftChild() != null && parent.getLeftChild().getData() == data) {
+                parent.setLeftChild(deleteNode.getRightChild());
+            } else {
+                parent.setRightChild(deleteNode.getRightChild());
+            }
+
+            deleteNode = null;
+        } else {
+            //4.要删除的节点儿女双全，既有左子树又有右子树，需要选一个合适的节点继承，这里使用右子树中最左节点
+            BinaryTreeNode copyOfDeleteNode = deleteNode;   //要删除节点的副本，指向继承节点的父节点
+            BinaryTreeNode heresNode = deleteNode.getRightChild(); //要继承位置的节点，初始为要删除节点的右子树的树根
+            //右子树没有左孩子了，他就是最小的，直接上位
+            if (heresNode.getLeftChild() == null) {
+                //上位后，兄弟变成了孩子
+                heresNode.setLeftChild(deleteNode.getLeftChild());
+            } else {
+                //右子树有左孩子，循环找到最左的，即最小的
+                while (heresNode.getLeftChild() != null) {
+                    copyOfDeleteNode = heresNode;       //copyOfDeleteNode 指向继承节点的父节点
+                    heresNode = heresNode.getLeftChild();
+                }
+                //找到了继承节点，继承节点的右子树（如果有的话）要上移一位
+                copyOfDeleteNode.setLeftChild(heresNode.getRightChild());
+                //继承节点先继承家业，把自己的左右孩子变成要删除节点的孩子
+                heresNode.setLeftChild(deleteNode.getLeftChild());
+                heresNode.setRightChild(deleteNode.getRightChild());
+            }
+            //最后就是确认位置，让要删除节点的父节点认识新儿子
+            if (parent.getLeftChild() != null && parent.getLeftChild().getData() == data) {
+                parent.setLeftChild(heresNode);
+            } else {
+                parent.setRightChild(heresNode);
+            }
+        }
+    }
+
+##运行代码测试
+
+可以看到，二叉排序树的查找、添加较简单，删除逻辑比较多，我们以下图为例：
+
+![这里写图片描述](http://img.blog.csdn.net/20161031182149529)
+
+测试代码：
+
+    @Test
+    public void delete() throws Exception {
+        //乱序插入到二叉排序树中
+        BinarySearchTree binarySearchTree = new BinarySearchTree(null);
+        binarySearchTree.insert(8);
+        binarySearchTree.insert(3);
+        binarySearchTree.insert(1);
+        binarySearchTree.insert(6);
+        binarySearchTree.insert(4);
+        binarySearchTree.insert(7);
+        binarySearchTree.insert(10);
+        binarySearchTree.insert(13);
+        binarySearchTree.insert(14);
+
+        //中序遍历
+        binarySearchTree.iterateMediumOrder(binarySearchTree.getRoot());
+        System.out.println("");
+        //查找某个数据
+        System.out.println(binarySearchTree.search(10).getData());
+        //删除某个数据对应的元素
+        binarySearchTree.delete(6);
+        //中序遍历删除后的二叉排序树
+        binarySearchTree.iterateMediumOrder(binarySearchTree.getRoot());
+    }
+    
+运行结果：
+
+![shixinzhang](http://img.blog.csdn.net/20161120164812430)
+
+##一道面试题
+
+>输入一棵二元查找树，将该二元查找树转换成一个排序的双向链表。要求不能创建任何新的结点，只调整指针的指向。 比如将二元查找树：
+>
+                                            10
+                                          /    \
+                                        6       14
+                                      /  \     /　 \
+                                   4     8  12 　  16
+
+>转换成双向链表后为：4=6=8=10=12=14=16
+>
+解析：
+这题据说是微软的面试题，乍看起来貌似很麻烦，又是二叉排序树又是双向链表的，其实考察的都是很基础的东西，明眼人一看就发现只要**将这棵树中序遍历后就是将二叉树节点排序**（不然它为啥叫二叉排序树呢...），那么我们只要将这棵树中序遍历，遍历到一个节点就将该节点的左指针指向上一个遍历的节点，并将上一个遍历的节点的右指针指向现在正在遍历的节点，那么当我们遍历完整棵树后，我们的双向链表也改好啦！这样既不用添加多余节点，也不用添加多余的指针变量。
+
+>该题转自：http://blog.renren.com/share/249404913/6219142584
+>
+>你可以写下代码试试。
+
+##总结
+
+　　二叉排序树的性能取决于二叉树的层数：
+
+- 最好的情况是 O(logn)，存在于完全二叉排序树情况下，其访问性能近似于折半查找；
+- 最差时候会是 O(n)，比如插入的元素是有序的，生成的二叉排序树就是一个链表，这种情况下，需要遍历全部元素才行（见下图 b）。
+
+![shixinzhang](http://img.blog.csdn.net/20161120170528505)
 
 ##平衡二叉树
 
