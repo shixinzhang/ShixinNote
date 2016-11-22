@@ -1,0 +1,27 @@
+https://zh.wikipedia.org/wiki/RFC
+
+https://tools.ietf.org/
+
+常见互联网协议的RFC编号
+
+- IP：791
+- TCP：793
+- UDP：768
+- ICMP：792
+- FTP：959
+- SOCK5：1928
+- CHAP：1994
+- SMTP：2821
+- POP3：1957
+- NTP：1305
+- HTTP1.1：2616
+- IMAP：2060
+- PPP：1661－1663
+- DHCP：2131
+- OSPF：2328
+- IPSec：2401－2412
+- IPv6：2460
+- SIP：3261
+- RTP：3550
+- RADIUS：3575，3576，3579，3580
+- L2TP：3931

@@ -19,3 +19,6 @@ http://blog.csdn.net/u011240877/article/details/47702745
 这个人写了好几篇泛型的
 
 http://blog.csdn.net/crave_shy/article/details/50822354
+
+泛型面试题
+http://blog.csdn.net/mariofei/article/details/19137753#comments
