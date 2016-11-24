@@ -27,3 +27,5 @@ synchronizedSet(Set<T>s)
 
 
 http://blog.csdn.net/nikobony/article/details/8691120
+
+http://blog.csdn.net/qq_28261343/article/details/52627545
