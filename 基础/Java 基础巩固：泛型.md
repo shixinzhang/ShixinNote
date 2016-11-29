@@ -1,8 +1,13 @@
-java泛型相关基础
+>大家好，这里是 《 Java 刨根问底》 栏目，去疑惑，无死角。
 
-- 为什么引入泛型
-- 泛型的使用方式
-- 以及在JDK或框架中的典型应用。
+>首先提个问题：
+>Java 泛型的作用是什么？泛型擦除是什么？泛型一般用在什么场景？
+
+>如果这个问题你答不上来，那这篇文章可能就对你有些价值。
+
+读完本文你将了解到：
+
+[TOC]
 
 ##什么是泛型
 
@@ -14,6 +19,14 @@ java泛型相关基础
 而《Java 编程思想》 中的定义是：
 
 >XXX
+
+###泛型类
+
+###泛型方法
+
+###泛型接口
+
+
 
 可见泛型的提出是为了编写重用性更好的代码。
 
@@ -48,6 +61,9 @@ java泛型相关基础
         generic.add(1, 23);
         
 
+
+
+在Java中，泛型是 Java 编译器的概念，Java 虚拟机运行时对泛型基本一无所知。
 
 
 根据《Java 编程思想》中的描述，泛型出现的动机在于：
@@ -151,7 +167,56 @@ ArrayList 源码：
 - 泛型的参数类型可以使用extends语句，例如。习惯上称为“有界类型”。
 - 泛型的参数类型还可以是通配符类型。例如Class
 
+##泛型的类型参数
+
 ##泛型的通配符
+
+有时候希望传入的类类型有一个指定的范围，从而可以进行一些允许的操作，这时候就是通配符边界登场的时候了。泛型的边界分两种：上界和下界。 
+
+泛型中有三种通配符形式：
+
+	1. <?>
+	2. <? extends E> extends关键字声明了类型的上界，表示参数化的类型可能是所指定的类型，或者是此类型的子类。
+	3. <? super E>
+
+接下来进行介绍，并且分析与类型参数形式的区别和联系。
+
+大部分情况下，这种限制是好的，但这使得一些理应正确的基本操作都无法完成，比如交换两个元素的位置，看代码：
+
+	public static void swap(DynamicArray<?> arr, int i, int j){
+	    Object tmp = arr.get(i);
+	    arr.set(i, arr.get(j));
+	    arr.set(j, tmp);
+	}
+
+这个代码看上去应该是正确的，但Java会提示编译错误，两行set语句都是非法的。不过，借助带类型参数的泛型方法，这个问题可以这样解决：
+
+	private static <T> void swapInternal(DynamicArray<T> arr, int i, int j){
+	    T tmp = arr.get(i);
+	    arr.set(i, arr.get(j));
+	    arr.set(j, tmp);
+	}
+	
+	public static void swap(DynamicArray<?> arr, int i, int j){
+	    swapInternal(arr, i, j);
+	}
+
+swap可以调用swapInternal，而带类型参数的swapInternal可以写入。Java容器类中就有类似这样的用法，公共的API是通配符形式，形式更简单，但内部调用带类型参数的方法。
+
+
+##通配符比较
+
+两种通配符形式<? super E>和<? extends E>也比较容易混淆，我们再来比较下。
+
+它们的目的都是为了使方法接口更为灵活，可以接受更为广泛的类型。
+
+- <? super E>用于灵活写入或比较，使得对象可以写入父类型的容器，使得父类型的比较方法可以应用于子类对象。
+- <? extends E>用于灵活读取，使得方法可以读取E或E的任意子类型的容器对象。
+
+简单总结来说：
+
+- <?>和<? extends E>用于实现更为灵活的读取，它们可以用类型参数的形式替代，但通配符形式更为简洁。
+- <? super E>用于实现更为灵活的写入和比较，不能被类型参数形式替代。
 
 ##泛型的类型擦除
 
@@ -167,9 +232,28 @@ ArrayList 源码：
 上面代码输出结果并不是预期的false，而是true。其原因就是泛型的擦除。
 
 
+泛型中没有逻辑上的父子关系，如List<Number>并不是List<Integer>的父类。两者擦除之后都是List，所以形如
 
+    /**
+     * 两者并不是方法的重载。擦除之后都是同一方法，所以编译不会通过。
+     * 擦除之后：
+     * 
+     * void m(List numbers){}
+     * void m(List strings){} //编译不通过，已经存在相同方法签名
+     */
+    void m(List<Number> numbers) {
 
-##泛型的使用例子
+    }
+
+    void m(List<String> strings) {
+
+    }
+
+##泛型的使用场景
+
+当类中要操作的引用数据类型不确定的时候，一开始定义 Object 来完成扩展，后来使用泛型来完成扩展，同时保证安全性。
+
+##总结
 
 
 
@@ -188,4 +272,14 @@ http://blog.csdn.net/mariofei/article/details/19137753#comments
 
 ##Thanks
 
+https://docs.oracle.com/javase/tutorial/java/generics/index.html
+
+http://www.journaldev.com/1663/java-generics-example-method-class-interface#java-generics-bounded-type-parameters
+
 http://blog.csdn.net/crave_shy/article/details/50822354
+
+http://mp.weixin.qq.com/s/te9K3alu8P8jRUUU2AkO3g
+
+http://mp.weixin.qq.com/s/TNxaOK2hBDzRtlNUlGxHcQ
+
+http://www.infoq.com/cn/articles/cf-java-generics
