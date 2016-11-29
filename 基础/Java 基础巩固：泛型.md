@@ -5,6 +5,99 @@ java泛型相关基础
 - 以及在JDK或框架中的典型应用。
 
 ##什么是泛型
+
+《Java 核心技术》中对泛型的定义是：
+>
+>“泛型” 意味着编写的代码可以被不同类型的对象所重用。
+>
+
+而《Java 编程思想》 中的定义是：
+
+>XXX
+
+可见泛型的提出是为了编写重用性更好的代码。
+
+
+
+##为什么引入泛型
+
+在引入泛型之前，要想实现一个可以处理不同类型的方法，你需要使用 Object 作为属性和方法参数，比如这样：
+
+	public class Generic {
+	    private Object[] mData;
+	
+	    public Generic(int capacity) {
+	        mData = new Object[capacity];
+	    }
+	
+	    public Object getData(int index) {
+	        //...
+	        return mData[index];
+	    }
+	
+	    public void add(int index, Object item) {
+	    	//...
+	        mData[index] = item;
+	    }
+	}
+	
+它使用一个 Object 数组来保存数据，这样在使用时可以添加不同类型的对象:
+
+        Generic generic = new Generic(10);
+        generic.add(0,"shixin");
+        generic.add(1, 23);
+        
+
+
+
+根据《Java 编程思想》中的描述，泛型出现的动机在于：
+
+>有许多原因促成了泛型的出现，而最引人注意的一个原因，就是为了创建容器类。
+
+
+
+集合容器的意义在于保存不同类型的元素，使用泛型可以XXXXXXX。
+
+	public interface Collection<E> extends Iterable<E> {
+	
+	    Iterator<E> iterator();
+	
+	    Object[] toArray();
+	
+	    <T> T[] toArray(T[] a);
+	    boolean add(E e);
+	
+	    boolean remove(Object o);
+
+	    boolean containsAll(Collection<?> c);
+	
+	    boolean addAll(Collection<? extends E> c);
+	
+	    boolean removeAll(Collection<?> c);
+	}	
+
+ArrayList 源码：
+
+
+        
+这里为什么数组中的元素数据类型是Object？
+
+实际上引入泛型的主要目标有以下几点：
+
+- 类型安全
+ -  泛型的主要目标是提高 Java 程序的类型安全。
+ -  使得java代码可以编译时期检查出因java类型导致的可能在运行时抛出ClassCastException异常。
+ -  符合越早出错代价越小原则。
+- 消除强制类型转换
+ - 泛型的一个附带好处是，消除源代码中的许多强制类型转换。
+ - 这使得代码更加可读，并且减少了出错机会。
+- 潜在的性能收益
+ - 泛型为较大的优化带来可能。在泛型的初始实现中，编译器将强制类型转换（没有泛型的话，程序员会指定这些强制类型转换）插入生成的字节码中。但是更多类型信息可用于编译器这一事实，为未来版本的 JVM 的优化带来可能。
+ - 由于泛型的实现方式，支持泛型（几乎）不需要 JVM 或类文件更改。所有工作都在编译器中完成，编译器生成类似于没有泛型（和强制类型转换）时所写的代码，只是更能确保类型安全而已。
+
+##泛型的使用方式
+
+
 泛型是Java SE 1.5的新特性，泛型的本质是**参数化类型**，也就是说所操作的数据类型被指定为一个参数。
 
 
@@ -48,51 +141,6 @@ java泛型相关基础
 
 
 用泛型编写的Java程序和普通的Java程序基本相同，只是多了一些参数化的类型同时少了一些类型转换。实际上泛型程序也是首先被转化成一般的不带泛型的 Java 程序后再进行处理的，编译器自动完成了从 Generic Java 到普通 Java 的翻译。
-
-##为什么引入泛型
-
-根据《Java编程思想 （第4版）》中的描述，泛型出现的动机在于：
-
->有许多原因促成了泛型的出现，而最引人注意的一个原因，就是为了创建容器类。
-
-集合容器的意义在于保存不同类型的元素，使用泛型可以XXXXXXX。
-
-	public interface Collection<E> extends Iterable<E> {
-	
-	    Iterator<E> iterator();
-	
-	    Object[] toArray();
-	
-	    <T> T[] toArray(T[] a);
-	    boolean add(E e);
-	
-	    boolean remove(Object o);
-
-	    boolean containsAll(Collection<?> c);
-	
-	    boolean addAll(Collection<? extends E> c);
-	
-	    boolean removeAll(Collection<?> c);
-	}	
-
-ArrayList 源码：
-
-	transient Object[] elementData; // non-private to simplify nested class access  
-        
-这里为什么数组中的元素数据类型是Object？
-
-实际上引入泛型的主要目标有以下几点：
-
-- 类型安全
- -  泛型的主要目标是提高 Java 程序的类型安全。
- -  使得java代码可以编译时期检查出因java类型导致的可能在运行时抛出ClassCastException异常。
- -  符合越早出错代价越小原则。
-- 消除强制类型转换
- - 泛型的一个附带好处是，消除源代码中的许多强制类型转换。
- - 这使得代码更加可读，并且减少了出错机会。
-- 潜在的性能收益
- - 泛型为较大的优化带来可能。在泛型的初始实现中，编译器将强制类型转换（没有泛型的话，程序员会指定这些强制类型转换）插入生成的字节码中。但是更多类型信息可用于编译器这一事实，为未来版本的 JVM 的优化带来可能。
- - 由于泛型的实现方式，支持泛型（几乎）不需要 JVM 或类文件更改。所有工作都在编译器中完成，编译器生成类似于没有泛型（和强制类型转换）时所写的代码，只是更能确保类型安全而已。
 
 ##泛型的规则
 
